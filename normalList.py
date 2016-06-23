@@ -1,4 +1,4 @@
-#coding=utf-8
+#-*- coding: utf-8 -*-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -14,8 +14,7 @@ class normalList:
 	def __init__(self,driver):
 		self.driver=driver
 		self.path='f:\\WorkSpace\\python\\excel\\new.csv'
-		reload(sys)
-		sys.setdefaultencoding('utf-8')
+		
 	def login(self,name,password):
 		self.driver.find_element_by_id("username").clear()
 		self.driver.find_element_by_id("username").send_keys(name)
@@ -201,23 +200,22 @@ class normalList:
  		Mytool.setDict("instruction",instruction)
  		Mytool.setDict("coding",coding)
 
- 	def intro(self,ids="bx_intro",path=None):
+ 	def intro(self,path,ids="bx_intro"):
  		"""商品描述"""
- 		if path:
- 			word=open(path,'r')
- 			intro=word.read()
- 			print intro
- 			self.driver.find_element_by_id(ids).send_keys(intro)
+ 		word=open(path,'r')
+ 		intro=word.read()
+ 		s=intro.decode("gbk")
+ 		print "intro"
+ 		self.driver.find_element_by_id(ids).send_keys(s)
 
 #上传图片
 	def upload_Pic(self,url):
 		self.driver.find_element_by_id("uppicpath").click()
 		time.sleep(2)
-		js="var input=document.getElementsByClassName('ks-editor-input');print input[0]"
+		js="document.getElementsByClassName('ks-editor-input')[0].readOnly=false"
 		self.driver.execute_script(js)
-		self.driver.find_element_by_class_name("ks-editor-input").clear()
-		self.driver.find_element_by_class_name("ks-editor-input").send_keys(url)
-		self.driver.find_element_by_class_name("btn-primary").click()
+		self.driver.find_element_by_name("test").send_keys(url)
+		self.driver.find_element_by_css_selector("button[datas='up']").click()
 		time.sleep(2)
 		self.driver.find_element_by_css_selector("div.ks-overlay-footer>div>button[datas='ok']").click()
 		time.sleep(1)
