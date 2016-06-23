@@ -7,12 +7,15 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import time,re,Mytool
+import os,sys
 
 
 class normalList:
 	def __init__(self,driver):
 		self.driver=driver
 		self.path='f:\\WorkSpace\\python\\excel\\new.csv'
+		reload(sys)
+		sys.setdefaultencoding('utf-8')
 	def login(self,name,password):
 		self.driver.find_element_by_id("username").clear()
 		self.driver.find_element_by_id("username").send_keys(name)
@@ -61,12 +64,9 @@ class normalList:
  #选择库存编号 库存挂牌时才有
  	def recipt_pick(self,no):
  		recipt_list=self.driver.find_elements_by_css_selector("ul#warehouse_tbContent a")
- 		print "length:%d"%len(recipt_list)
-
  		time.sleep(1)
  		variety=''
  		trade_name=''
-
  		if self.flag==1:
  			for i in recipt_list:
  				print i.get_attribute('recepit_id')
@@ -194,12 +194,20 @@ class normalList:
  		else:
  			coding=codeList[0].text
  			ActionChains(self.driver).move_to_element(codeList[0]).click().perform()
- 			
+
  		Mytool.setDict("specification",specification)
  		Mytool.setDict("model",model)
  		Mytool.setDict("origin",origin)
  		Mytool.setDict("instruction",instruction)
  		Mytool.setDict("coding",coding)
+
+ 	def intro(self,ids="bx_intro",path=None):
+ 		"""商品描述"""
+ 		if path:
+ 			word=open(path,'r')
+ 			intro=word.read()
+ 			print intro
+ 			self.driver.find_element_by_id(ids).send_keys(intro)
 
 #上传图片
 	def upload_Pic(self,url):
