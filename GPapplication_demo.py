@@ -12,6 +12,7 @@ from selenium.common.exceptions import NoAlertPresentException
 import unittest, time, re
 import os,sys
 from normalList import normalList
+from ListCheckFactory import ListCheck
 import Mytool
 from ListTab import ListTab
 import HTMLTestRunner
@@ -24,34 +25,32 @@ class GPapplication(unittest.TestCase):
         sys.setdefaultencoding('utf-8')
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(30)
-        self.base_url = "http://192.168.11.134:14703"
+        self.base_url = "http://192.168.10.121:11053/"
         self.verificationErrors = []
         self.accept_next_alert = True
         #self.f=open("f:/workspace/python/data.txt","w")
         self.driver.maximize_window()
         global dict
 
-    def test_g_papplication(self):
-        u"""商品挂牌测试用例"""
+    '''def test_garantee(self):
+        """保证金信用金挂牌"""
         driver = self.driver
         driver.delete_all_cookies()
         driver.get(self.base_url + 
             "/gzql/goods/add_goods_pay.shtml?menu_no=652121")
         li=normalList(driver)
-        li.login("deadline1",888888)   
+        li.login("qiuwjcom1",888888)   
         time.sleep(3)     
-        li.choose_Ganrantee(3)
-        
-        li.recipt_pick("47")
-        #li.fund_pick(0,1)
+        li.choose_Ganrantee(1)
+        li.fund_pick(0,1)
         time.sleep(2)
-        #li.Goods_attr()
-      #  time.sleep(3)    
-        driver.get_screenshot_as_file("f:\\workspace\\python\\normaltest\\1.png")
+        li.Goods_attr()
+        li.intro('C:\\Users\\Administrator.2013-20150712UD\\Desktop\\eng.txt')
+        time.sleep(3)   
         js="document.documentElement.scrollTop=400"
         driver.execute_script(js)
         url=u"E:\\图片\\20150405H4118_AFk2Z.jpeg"
-        #li.upload_Pic(url)
+        li.upload_Pic(url)
         js="document.documentElement.scrollTop=1000"
         driver.execute_script(js)
     #交易信息
@@ -65,10 +64,10 @@ class GPapplication(unittest.TestCase):
         js="document.documentElement.scrollTop=1600"
         driver.execute_script(js)
         li.getContract(1,20,10)
-       # money=li.getContract()
-       # li.payDeposite()
+        #money=li.getContract()
+        li.payDeposite()
 
-       #print li.getFreezeM()
+        #print li.getFreezeM()
 #截屏
         js="document.documentElement.scrollTop=1900"
         driver.execute_script(js)
@@ -80,9 +79,51 @@ class GPapplication(unittest.TestCase):
 
         time.sleep(5)
         li.getListNo()
+        dict=li.returnDic()'''
+
+    def test_wareHouse(self):
+        u"""仓单库存挂牌"""
+        driver = self.driver
+        driver.delete_all_cookies()
+        driver.get(self.base_url + 
+            "/gzql/goods/add_goods_pay.shtml?menu_no=652121")
+        li=normalList(driver)
+        li.login("qiuwjcom1",888888)   
+        time.sleep(3)     
+        li.choose_Ganrantee(3)   
+        li.recipt_pick("6")
+        time.sleep(2) 
+        li.intro('C:\\Users\\Administrator.2013-20150712UD\\Desktop\\eng.txt','wm_intro')
+        time.sleep(3)   
+        js="document.documentElement.scrollTop=400"
+        driver.execute_script(js)
+        url=u"E:\\图片\\20150405H4118_AFk2Z.jpeg"
+        li.upload_Pic(url)
+        js="document.documentElement.scrollTop=1000"
+        driver.execute_script(js)
+    #交易信息
+        li.trade_info(2,50,1,30)
+        print "totalprice:%d"%li.getTotalprice()
+        js="document.documentElement.scrollTop=1400"
+        driver.execute_script(js)
+    #交收信息
+        li.set_Addr()
+        js="document.documentElement.scrollTop=1600"
+        driver.execute_script(js)
+        li.getContract(1,20,10)
+#截屏
+        js="document.documentElement.scrollTop=1900"
+        driver.execute_script(js)
+        driver.get_screenshot_as_file("f:\\workspace\\python\\1.png")
+        time.sleep(5)
+#合同约定
+        li.submit()
+
+        time.sleep(5)
+        li.getListNo()
         dict=li.returnDic()
     
-    def test_l_check(self):
+    ''' def test_l_check(self):
         u"""挂牌列表测试用例"""
        # Mytool.printDict()
         driver = self.driver
@@ -90,31 +131,19 @@ class GPapplication(unittest.TestCase):
         driver.get(self.base_url + 
             "/gzql/goods/goods_mgr.shtml?menu_no=652102#tab1")
         ll=ListTab(driver)
-        ll.login("deadline1",888888)   
+        ll.login("deadline2",888888)   
+        #now=time.strftime('%y-%m-%d_%H_%M_%S',time.localtime(time.time()))
+        #driver.get_screenshot_as_file(u"f:\\workspace\\python\\%s.png"%now)
         time.sleep(3)
-        no=ll.getListNo()
+        ll.getOperate("check")
+        print "end"
+        aa=ListCheck(driver)
+        print "ssss"
+        ad=aa.getSuccInfo()
+        for ii in ad:
+            print"11111111"
+            print ad[ii]'''
         
-
-        amount=ll.getListAmount()
-        #amount=amount.decode("gb2312")
-        price=ll.getPrice()
-        priceL=re.split(r'(\d*)',price)
-        priceNum=priceL[1]
-        priceUnit=priceL[2]
-        date=ll.getListDate()
-        print no
-        print amount
-        print priceNum
-        if priceUnit==u'元/斤':
-            print "equals"
-        else:
-            print "wrong"
-        print date
-        '''try: self.assertEqual(Mytool.getDict("listNo"),no)
-        except AssertionError as e: self.verificationErrors.append(str(e))
-        
-        try: self.assertEqual(Mytool.getDict("listAmount"),amount)
-        except AssertionError as e: self.verificationErrors.append(str(e))'''
         
 
 
@@ -147,11 +176,13 @@ class GPapplication(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
         
 if __name__ == "__main__":
-    testunit=unittest.TestSuite()
-   # testunit.addTest(GPapplication("test_g_papplication"))
+    '''testunit=unittest.TestSuite()
+    #testunit.addTest(GPapplication("test_g_papplication"))
     testunit.addTest(GPapplication("test_l_check"))
 
-    filename="f:\\WorkSpace\\python\\20160621\\repoter.html"
+    filename="f:\\www\\qiuLib\\repoter.html"
     fp=file(filename,'wb')
     runner=HTMLTestRunner.HTMLTestRunner(stream=fp,title='testreport',description='caseRun')
-    runner.run(testunit)
+    runner.run(testunit)'''
+
+    unittest.main()
