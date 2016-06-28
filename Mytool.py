@@ -1,7 +1,7 @@
 #coding=utf-8
 import xlrd
 import xlwt
-import os
+import os,time
 from xlutils.copy import copy
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
-
+import unittest
 myDict={}
 def saveExc(path,title,val):
   row=0
@@ -78,6 +78,19 @@ def findTag(dri,tagname):
 def findPartialLink(dri,para):
   ele=dri.find_element_by_partial_link_text(para)
   return ele
+
+def getScreen(driver,path=u'f:\\workspace\\python',format="%y-%m-%d_%H_%M_%S"):
+  now=time.strftime(format,time.localtime(time.time()))
+  driver.get_screenshot_as_file(path+'\\%s.png'%now)
+
+def verify(driver,result,expect):
+  if result==expect:
+    print "true"
+  else:
+    print"not equal"
+    getScreen(driver)
+    return result
+
 #uname=table.cell(0,0).value
 #print rows
 #print uname
