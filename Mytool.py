@@ -3,6 +3,13 @@ import xlrd
 import xlwt
 import os
 from xlutils.copy import copy
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoAlertPresentException
 
 myDict={}
 def saveExc(path,title,val):
@@ -28,7 +35,7 @@ def setDict(key,value):
   if not myDict.has_key(key):
     myDict[key]=value
   else:
-    raise ValueError('the key has already in dictinary')
+    raise ValueError('the key has already in dictionary')
 def getDict(key):
   if myDict.has_key(key):
     return myDict[key]
@@ -42,6 +49,35 @@ def printDict():
       print "key%s"%k
       print "value is:%s"%myDict[k]
 
+def findId(dri,id,value=""):
+  ele=dri.find_element_by_id(id)
+  if value:
+    ele.clear()
+    ele.send_keys(value)
+    return
+  else:
+    return ele
+def findClass(dri,classname):
+  ele=dri.find_element_by_class_name(classname)
+  return ele
+def findXpath(dri,xpath):
+  ele=dri.find_element_by_xpath(xpath)
+  return ele
+def findCss(dri,css):
+  ele=dri.find_element_by_css_selector(css)
+  return ele
+def findLink(dri,link):
+  ele=dri.find_element_by_link_text(link)
+  return ele
+def findName(dri,name):
+  ele=dri.find_element_by_name(name)
+  return ele
+def findTag(dri,tagname):
+  ele=dri.find_element_by_tag_name(tagname)
+  return ele
+def findPartialLink(dri,para):
+  ele=dri.find_element_by_partial_link_text(para)
+  return ele
 #uname=table.cell(0,0).value
 #print rows
 #print uname

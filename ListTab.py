@@ -13,12 +13,12 @@ class ListTab:
 		self.driver=driver
 		#self.path='f:\\WorkSpace\\python\\excel\\new.csv'
 	def login(self,name,password):
-		self.driver.find_element_by_id("username").clear()
-		self.driver.find_element_by_id("username").send_keys(name)
-		self.driver.find_element_by_id("password").clear()
-		self.driver.find_element_by_id("password").send_keys(password)
+		driver=self.driver
+		Mytool.findId(driver,"username",name)
+		Mytool.findId(driver,"password",password)
 		time.sleep(3)
-		self.driver.find_element_by_id("login_btn").click()
+		Mytool.findId(driver,"login_btn").click()
+		
 	def getListNo(self):
 		"""获取第一行挂牌单号"""
 		driver=self.driver
