@@ -66,6 +66,9 @@ def findXpath(dri,xpath):
 def findCss(dri,css):
   ele=dri.find_element_by_css_selector(css)
   return ele
+def findCsses(dri,css):
+  ele=dri.find_elements_by_css_selector(css)
+  return ele
 def findLink(dri,link):
   ele=dri.find_element_by_link_text(link)
   return ele
@@ -91,6 +94,14 @@ def verify(driver,result,expect):
     getScreen(driver)
     return result
 
+def downList(driver,id,css,j):
+  elem=findId(driver,id)
+  ActionChains(driver).click(elem).perform()
+  time.sleep(1)
+  goodname_list=findCsses(driver,css)
+  ActionChains(driver).click(goodname_list[j]).perform()
+  trade_name=goodname_list[j].text
+  return trade_name
 #uname=table.cell(0,0).value
 #print rows
 #print uname

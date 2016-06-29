@@ -5,7 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import NoAlertPresentException 
 import time,re,Mytool
 import os,sys
 
@@ -16,10 +16,9 @@ class normalList:
 		self.path='f:\\WorkSpace\\python\\excel\\new.csv'
 		
 	def login(self,name,password):
-		self.driver.find_element_by_id("username").clear()
-		self.driver.find_element_by_id("username").send_keys(name)
-		self.driver.find_element_by_id("password").clear()
-		self.driver.find_element_by_id("password").send_keys(password)
+		driver=self.driver
+		Mytool.findId(driver,"username",name)
+		Mytool.findId(driver,"password",password)
 		time.sleep(3)
 		self.driver.find_element_by_id("login_btn").click()
 #click and enter the Grouppurchase 
@@ -36,8 +35,9 @@ class normalList:
 
 	def choose_Ganrantee(self,val):
 		"""选择担保方式 1 保证金 2.信用金 3.仓单 4.库存"""
+		driver=self.driver
 		if val== 1:
-				gan1=self.driver.find_element_by_css_selector("input.is_deposit1")
+				gan1=Mytool.findCss(driver,"input.is_deposit1")
 				if gan1.get_attribute("checked"):
 					self.flag=0
 					Mytool.setDict("ganrantee",u"保证金")
@@ -113,6 +113,7 @@ class normalList:
 		"""i 代表品种选择第i个
 			j代表品名选择第j个	
 		"""
+		driver=self.driver
 		elem=self.driver.find_element_by_xpath('//*[@id="pannel_div"]/div[1]/div/div/div/div')
 		ActionChains(self.driver).click(elem).perform()
 		listid=elem.get_attribute("aria-haspopup")
@@ -125,13 +126,14 @@ class normalList:
 		variety=self.driver.find_element_by_name("cat_id_txt").get_attribute("value")
 		self.driver.implicitly_wait(10)
 #品名
-		elem=self.driver.find_element_by_id("goods_name_input")
+		'''elem=self.driver.find_element_by_id("goods_name_input")
 		ActionChains(self.driver).click(elem).perform()
 		time.sleep(1)
 		goodname_list=self.driver.find_elements_by_css_selector("a.list-group-item")
 		
 		ActionChains(self.driver).click(goodname_list[j]).perform()
-		trade_name=goodname_list[j].text
+		trade_name=goodname_list[j].text'''
+		trade_name=Mytool.downList(driver,"goods_name_input","a.list-group-item",j)
 		time.sleep(1)
 		Mytool.setDict("variety",variety)
 		Mytool.setDict("trade_name",trade_name)
@@ -141,7 +143,6 @@ class normalList:
  		"""商品属性 都选择下拉列表中第一个属性"""
  		self.driver.find_element_by_id('att14_tg').click()
  		time.sleep(1)
-
  		standardList=self.driver.find_elements_by_css_selector('a[role="link-#att14_ip"]')
  		#print type(standardList)
  		if not standardList:
@@ -269,7 +270,14 @@ class normalList:
 		return totalPrice
 	
 #set address
-	def set_Addr(self):
+	def set_Addr(self,deli):
+		driver=self.driver
+		deliveryList=self.driver.find_elements_by_name("csg_way_radio")
+		if deli==1:
+			Mytool.setDict("delivery",u"买方送货")
+		elif deli==2:
+			deliveryList[1].click()
+			Mytool.setDict("delivery",u"买方自提")
 		self.driver.find_element_by_id("wh_addr_id").click()
 		self.driver.find_element_by_link_text(u"甘肃").click()
 		self.driver.find_element_by_link_text(u"临夏回族自治州").click()
