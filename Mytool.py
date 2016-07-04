@@ -102,6 +102,27 @@ def downList(driver,id,css,j):
   ActionChains(driver).click(goodname_list[j]).perform()
   trade_name=goodname_list[j].text
   return trade_name
+
+def selectList(driver,name,xpath):
+  """Traditional select list"""
+  selectL=findName(driver,name)
+  print name
+  print selectL
+  selectL.find_element_by_xpath(xpath).click()
+
+def scroll(driver,ypoint):
+  driver.execute_script("document.documentElement.scrollTop=arguments[0]",ypoint)
+
+def chooseDate(driver,id,time):
+  driver.execute_script("document.getElementById(arguments[0]).readOnly=false",id)
+  findId(driver,id,time)
+
+def getDataRules(str):
+  minum=str.split(',')[1]
+  maxine=str.split(',')[1]
+  minVal=minum.split(':')[1]
+  maxVal=maxine.split(':')[1]
+  return [minVal,maxVal]
 #uname=table.cell(0,0).value
 #print rows
 #print uname

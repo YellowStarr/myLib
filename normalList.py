@@ -17,21 +17,10 @@ class normalList:
 		
 	def login(self,name,password):
 		driver=self.driver
-		Mytool.findId(driver,"username",name)
-		Mytool.findId(driver,"password",password)
+		Mytool.findName(driver,"username").send_keys(name)
+		Mytool.findName(driver,"password").send_keys(password)
 		time.sleep(3)
-		self.driver.find_element_by_id("login_btn").click()
-#click and enter the Grouppurchase 
-	def find_List_link(self,css,link):
-		driver=self.driver
-		l=driver.find_element_by_id("menu_652")
-		ll=driver.find_element_by_xpath("//*[@id='menu_show_652']/div/dl/dd[1]/a")
-		ActionChains(driver).move_to_element(l).click(ll).perform()
-		
-		#gp=driver.find_element_by_id("")
-	
-		#driver.find_element_by_link_text(link).click()
-
+		self.driver.find_element_by_id("login_bt").click()
 
 	def choose_Ganrantee(self,val):
 		"""选择担保方式 1 保证金 2.信用金 3.仓单 4.库存"""
@@ -92,7 +81,7 @@ class normalList:
  			Mytool.setDict("warehouse",no)
  			Mytool.saveExc(self.path,u"库存编号",no)
 
- 		specification=self.driver.find_element_by_id("att14_txt").text
+ 		'''specification=self.driver.find_element_by_id("att14_txt").text
  		model=self.driver.find_element_by_id("att3_txt").text
  		origin=self.driver.find_element_by_id("att7_txt").text
  		instruction=self.driver.find_element_by_id("att13_txt").text
@@ -104,7 +93,7 @@ class normalList:
  		Mytool.setDict("model",model)
  		Mytool.setDict("origin",origin)
  		Mytool.setDict("instruction",instruction)
- 		Mytool.setDict("coding",coding)
+ 		Mytool.setDict("coding",coding)'''
 
 
 #选择保证金货信用金挂牌时，选择品种等
@@ -286,30 +275,33 @@ class normalList:
 		self.driver.find_element_by_id("addr_id").send_keys(u"撒地方")
 		#获取输入文本框的值
 		js='var s=document.getElementById("wh_addr_id").value;return s'
-
 		addr=self.driver.execute_script(js)
-		
 		detail_addr=self.driver.execute_script('return document.getElementById("addr_id").value')
 		addr=addr+detail_addr
 		addrL=addr.split()
 		addr=''.join(addrL)
 		Mytool.setDict("addr",addr)
 	
-	def getContract(self,depValue=1,buyerP=0,sellerP=0):
+	def getContract(self,depValue=1,buyerP=0,sellerP=0,firstN=80,day1=0,day2=1,day3=1,day4=1,day5=1):
 		"""depValue 1 means deposit percent ,default value;2 means choose deposit quato 
 		   buyerP means buyer's rule and sellerP means seller's rule. if input less than system setting, we will use system setting`
 		   values, else we will use the args. if no input values we use system setting
 		"""
-		self.driver.find_element_by_id("append_more").click()
-		time.sleep(1)
+		driver=self.driver
+		try:
+			self.driver.find_element_by_id("append_more").click()
+			time.sleep(1)
+		except:
+			print 'no button'
 		depL=self.driver.find_elements_by_name("deposit_id")
 		if depValue==1:
 			Mytool.setDict('garanteeWay','percentage')
 			percentageB=self.driver.find_element_by_id("deposit_value_1")
-			perB=self.driver.execute_script("return document.getElementById('deposit_value_1').value")
+			datarules1=percentageB.get_attribute('data-rules')
+			perB=Mytool.getDataRules(datarules1)[0]
 			percentageS=self.driver.find_element_by_id("deposit_value_1_2")
-			perS=self.driver.execute_script("return document.getElementById('deposit_value_1_2').value")
-			
+			datarules2=percentageS.get_attribute('data-rules')
+			perS=Mytool.getDataRules(datarules2)[0]	
 			if buyerP>=float(perB) and buyerP<= 100:
 				percentageB.clear()
 				percentageB.send_keys(buyerP)
@@ -321,14 +313,15 @@ class normalList:
 					percentageS.send_keys(sellerP)
 			else:
 				sellerP=""
-
 		elif depValue==2:
 			depL[1].click()
 			Mytool.setDict('garanteeWay','quato')
 			quatoB=self.driver.find_element_by_id("deposit_value_2")
-			numB=self.driver.execute_script("return document.getElementById('deposit_value_2').value")
+			datarules1=quatoB.get_attribute('data-rules')
+			numB=Mytool.getDataRules(datarules1)[0]
 			quatoS=self.driver.find_element_by_id("deposit_value_2_2")
-			numS=self.driver.execute_script("return document.getElementById('deposit_value_2_2').value")
+			datarules2=quatoS.get_attribute('data-rules')
+			numS=Mytool.getDataRules(datarules2)[0]
 			if buyerP>=float(numB):
 				quatoB.clear()
 				quatoB.send_keys(buyerP)
@@ -342,7 +335,46 @@ class normalList:
 		Mytool.setDict("buyerP",buyerP)
 		Mytool.setDict("sellerP",sellerP)
 
+		inspect=Mytool.findId(driver,"att45")
+		
+		if not inspect.get_attribute("disabled"):
+			print inspect.get_attribute("disabled")
+			print 'disable'
+			rule1=inspect.get_attribute('data-rules')
+			minVal=Mytool.getDataRules(rule1)[0]
+			inspect.send_keys(firstN)
 
+
+		ganranteeDeadline=Mytool.findId(driver,'att41')
+		
+		if not ganranteeDeadline.get_attribute("disabled"):
+			rule2=ganranteeDeadline.get_attribute('data-rules')
+			minVal2=Mytool.getDataRules(rule2)[0]
+			ganranteeDeadline.send_keys(day1)
+
+		payDeadline=Mytool.findId(driver,'att42')
+		if not payDeadline.get_attribute("disabled"):
+			rule3=payDeadline.get_attribute('data-rules')
+			minVal3=Mytool.getDataRules(rule3)[0]
+			payDeadline.send_keys(day2)
+
+		delivDeadline=Mytool.findId(driver,'att47')
+		if not delivDeadline.get_attribute("disabled"):
+			rule4=delivDeadline.get_attribute('data-rules')
+			minVal4=Mytool.getDataRules(rule4)[0]
+			delivDeadline.send_keys(day3)
+
+		inspectDeadline=Mytool.findId(driver,'att43')
+		if not inspectDeadline.get_attribute("disabled"):
+			rule5=inspectDeadline.get_attribute('data-rules')
+			minVal5=Mytool.getDataRules(rule5)[0]
+			inspectDeadline.send_keys(day4)
+
+		ticketDeadline=Mytool.findId(driver,'att44')
+		if not ticketDeadline.get_attribute("disabled"):
+			rule6=ticketDeadline.get_attribute('data-rules')
+			minVal6=Mytool.getDataRules(rule6)[0]
+			ticketDeadline.send_keys(day5)
 #合同约定资金
 	def payDeposite(self):
 		"""no input accept. just get values that system has calculated
@@ -375,11 +407,6 @@ class normalList:
 		self.driver.find_element_by_id("commitBtnId").click()
 		time.sleep(1)
 		self.driver.get_screenshot_as_file("f:\\workspace\\python\\2.png")
-		#textid=self.driver.find_element_by_css_selector("div[aria-hidden='false']").get_attribute('id')
-		#textid="ks-stdmod-body-"+textid
-		#print textid
-		#ss=self.driver.find_element_by_xpath("//*[@id='"+textid+"']/div").text
-		#print ss.encode("utf-8")
 		if self.flag==0:
 			if self.driver.find_element_by_css_selector("button[datas='cancel']").is_displayed():
 				print "continue"

@@ -25,14 +25,14 @@ class GPapplication(unittest.TestCase):
         sys.setdefaultencoding('utf-8')
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(30)
-        self.base_url = "http://192.168.10.121:11053/"
+        self.base_url = "http://192.168.10.153:8080"
         self.verificationErrors = []
         self.accept_next_alert = True
         #self.f=open("f:/workspace/python/data.txt","w")
         self.driver.maximize_window()
         global dict
 
-    '''def test_garantee(self):
+    def test_garantee(self):
         """保证金信用金挂牌"""
         driver = self.driver
         driver.delete_all_cookies()
@@ -64,22 +64,17 @@ class GPapplication(unittest.TestCase):
         js="document.documentElement.scrollTop=1600"
         driver.execute_script(js)
         li.getContract(1,20,10)
-        #money=li.getContract()
         li.payDeposite()
-
-        #print li.getFreezeM()
-#截屏
+    #截屏
         js="document.documentElement.scrollTop=1900"
         driver.execute_script(js)
-
         driver.get_screenshot_as_file("f:\\workspace\\python\\1.png")
         time.sleep(5)
-#合同约定
+    #合同约定
         li.submit()
-
         time.sleep(5)
         li.getListNo()
-        dict=li.returnDic()'''
+        dict=li.returnDic()
 
     def test_wareHouse(self):
         u"""仓单库存挂牌"""
@@ -90,11 +85,11 @@ class GPapplication(unittest.TestCase):
         li=normalList(driver)
         li.login("qiuwjcom1",888888)   
         time.sleep(3)     
-        li.choose_Ganrantee(3)   
-        li.recipt_pick("6")
+        li.choose_Ganrantee(4)   
+        li.recipt_pick("618")
         time.sleep(2) 
-        li.intro('C:\\Users\\Administrator.2013-20150712UD\\Desktop\\eng.txt','wm_intro')
-        time.sleep(3)   
+        #li.intro('C:\\Users\\Administrator.2013-20150712UD\\Desktop\\eng.txt','wm_intro')
+        #time.sleep(3)   
         js="document.documentElement.scrollTop=400"
         driver.execute_script(js)
         url=u"E:\\图片\\20150405H4118_AFk2Z.jpeg"
@@ -102,28 +97,27 @@ class GPapplication(unittest.TestCase):
         js="document.documentElement.scrollTop=1000"
         driver.execute_script(js)
     #交易信息
-        li.trade_info(2,50,1,30)
+        li.trade_info(2,5,1,30)
         print "totalprice:%d"%li.getTotalprice()
-        js="document.documentElement.scrollTop=1400"
+        js="document.documentElement.scrollTop=1600"
         driver.execute_script(js)
     #交收信息
-        li.set_Addr()
+        li.set_Addr(2)
         js="document.documentElement.scrollTop=1600"
         driver.execute_script(js)
         li.getContract(1,20,10)
-#截屏
+    #截屏
         js="document.documentElement.scrollTop=1900"
         driver.execute_script(js)
         driver.get_screenshot_as_file("f:\\workspace\\python\\1.png")
         time.sleep(5)
-#合同约定
+    #合同约定
         li.submit()
-
         time.sleep(5)
         li.getListNo()
         dict=li.returnDic()
     
-    ''' def test_l_check(self):
+    def test_l_check(self):
         u"""挂牌列表测试用例"""
        # Mytool.printDict()
         driver = self.driver
@@ -131,25 +125,18 @@ class GPapplication(unittest.TestCase):
         driver.get(self.base_url + 
             "/gzql/goods/goods_mgr.shtml?menu_no=652102#tab1")
         ll=ListTab(driver)
-        ll.login("deadline2",888888)   
-        #now=time.strftime('%y-%m-%d_%H_%M_%S',time.localtime(time.time()))
-        #driver.get_screenshot_as_file(u"f:\\workspace\\python\\%s.png"%now)
+        ll.login("qiuwjcom1",888888)   
+        Mytool.getScreen(driver)
         time.sleep(3)
         ll.getOperate("check")
-        print "end"
-        aa=ListCheck(driver)
-        print "ssss"
+        aa=ListCheck(driver) 
         ad=aa.getSuccInfo()
         for ii in ad:
-            print"11111111"
-            print ad[ii]'''
-        
-        
+            print ii
+            print ad[ii]
 
-
-
-       
-    
+        Mytool.verify(driver,'dddd',ad['bidway'])
+        self.verificationErrors.append(str(ad['bidway']))
     def is_element_present(self, how, what):
         try: self.driver.find_element(by=how, value=what)
         except NoSuchElementException as e: return False
@@ -176,13 +163,11 @@ class GPapplication(unittest.TestCase):
         self.assertEqual([], self.verificationErrors)
         
 if __name__ == "__main__":
-    '''testunit=unittest.TestSuite()
-    #testunit.addTest(GPapplication("test_g_papplication"))
-    testunit.addTest(GPapplication("test_l_check"))
+    testunit=unittest.TestSuite()
+    #testunit.addTest(GPapplication("test_garantee"))
+    testunit.addTest(GPapplication("test_wareHouse"))
 
     filename="f:\\www\\qiuLib\\repoter.html"
     fp=file(filename,'wb')
     runner=HTMLTestRunner.HTMLTestRunner(stream=fp,title='testreport',description='caseRun')
-    runner.run(testunit)'''
-
-    unittest.main()
+    runner.run(testunit)
